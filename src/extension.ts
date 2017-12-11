@@ -9,6 +9,7 @@ interface ShellConfig {
     args?: string[];
     label?: string;
     launchName?: string;
+    env?: { [key: string]: string | null };
 }
 
 interface ShellLauncherConfig {
@@ -69,7 +70,12 @@ export function activate(context: vscode.ExtensionContext) {
                 return;
             }
             const shell = shells.filter(c => getShellLabel(c) === item.label)[0];
-            const terminal = vscode.window.createTerminal(shell.launchName, shell.shell, shell.args);
+            const terminal = vscode.window.createTerminal({
+                name: shell.launchName,
+                shellPath: shell.shell,
+                shellArgs: shell.args,
+                env: shell.env
+            });
             terminal.show();
         });
     });
